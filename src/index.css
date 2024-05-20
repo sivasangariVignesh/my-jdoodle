@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.jd-problem-items {
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  background: green;
+  border-radius: 10px;
+  text-align: justify;
+}
+
+.jd-problem-done { padding: 10px;
+  text-decoration: none;
+  color: white;
+  background: grey;
+  border-radius: 10px;
+  text-align: justify;
+}.jd-problem-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.jd-problem-data-section.col {
+  border: 1px solid #ddd;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.jd-problem.description {
+  font-size: 15px;
+  font-family: verdana;
+  padding-bottom: 15px;
+}
+
+.jd-problem.constraints {
+  padding-bottom: 15px;
+}
+
+.jd-problem.constraints-title {
+  font-size: 14px;
+  font-family: Verdana;
+  font-weight: bold;
+}
+
+.jd-problem.example .card {
+  margin-bottom: 15px!important;
+}
+
+.jd-problem.example .card-title.h5 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.jd-exampleExplanation b {
+  width: 100%;
+  display: block;
+}
+
+.jd-problem-exection-section.col {
+  border: 1px solid #ddd;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.jd-problem-exection-header a {
+  text-decoration: none;
+  padding: 10px;
+  color: white;
+  background: green;
+  border-radius: 10px;
+  margin-left: 15px;
+  
+}
+.jd-problem-exection-editor {
+  display: block;
+  border: 1px solid #ddd;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 10px;
+  width: 100%;
+  height: 50vh;
+}
+
+.jd-problem-exection-submit {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.jd-problem-exection-results {
+  display: block;
+}
+
+.jd-problem-exection-results-Title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.jd-back-btn{
+  background-color: gray!important;
+}
+.jd-problem-exection-header {
+  display: block;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  /* border-bottom: 1px solid #ddd; */
+}
