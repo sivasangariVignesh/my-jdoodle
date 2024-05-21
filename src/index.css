@@ -11,6 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
 .jd-problem-items {
   padding: 10px;
   text-decoration: none;
@@ -20,13 +21,17 @@ code {
   text-align: justify;
 }
 
-.jd-problem-done { padding: 10px;
+.jd-problem-done {
+  padding: 10px;
   text-decoration: none;
+  width: 68px;
   color: white;
   background: grey;
   border-radius: 10px;
   text-align: justify;
-}.jd-problem-title {
+}
+
+.jd-problem-title {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
@@ -57,7 +62,7 @@ code {
 }
 
 .jd-problem.example .card {
-  margin-bottom: 15px!important;
+  margin-bottom: 15px !important;
 }
 
 .jd-problem.example .card-title.h5 {
@@ -84,8 +89,9 @@ code {
   background: green;
   border-radius: 10px;
   margin-left: 15px;
-  
+
 }
+
 .jd-problem-exection-editor {
   display: block;
   border: 1px solid #ddd;
@@ -113,12 +119,24 @@ code {
   font-weight: bold;
   margin-top: 20px;
 }
-.jd-back-btn{
-  background-color: gray!important;
+
+.jd-back-btn {
+  background-color: gray !important;
 }
+
 .jd-problem-exection-header {
   display: block;
   margin-bottom: 15px;
   padding-bottom: 15px;
   /* border-bottom: 1px solid #ddd; */
+}
+
+.jd-testResult {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.jd-testResultTitle {
+  font-weight: bold;
 }
