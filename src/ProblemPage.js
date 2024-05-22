@@ -37,81 +37,10 @@ function ProblemPage(props) {
   const [testOut, setTestOut] = useState('');
 
   const [jdToken, setToken] = useState('');
-  /*let socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), { heartbeat: false, debug: true })
 
-  function onWsConnection() {
-    console.log('connection succeeded')
-
-    socketClient.subscribe('/user/queue/execute-i', (message) => {
-      let msgId = message.headers['message-id']
-      let msgSeq = parseInt(msgId.substring(msgId.lastIndexOf('-') + 1))
-
-      let statusCode = parseInt(message.headers.statusCode)
-
-      if (statusCode === 201) {
-        this.wsNextId = msgSeq + 1
-        return
-      }
-
-      let t0
-      try {
-        t0 = performance.now()
-        while ((performance.now() - t0) < 2500 && this.wsNextId !== msgSeq) {
-
-        }
-      } catch (e) {
-
-      }
-
-      if (statusCode === 204) {
-        //executionTime = message.body
-      } else if (statusCode === 500 || statusCode === 410) {
-        //server error
-        console.log("server error");
-      } else if (statusCode === 206) {
-        //outputFiles = JSON.parse(message.body)
-        //returns file list - not supported in this custom api
-      } else if (statusCode === 429) {
-        //Daily limit reached
-        console.log("daily limit reached");
-      } else if (statusCode === 400) {
-        //Invalid request - invalid signature or token expired - check the body for details
-        console.log("invalid request - invalid signature or token expired");
-      } else if (statusCode === 401) {
-        //Unauthorised request
-        console.log("Unauthorised request");
-      } else {
-        var txt = document.getElementById("jd-result").value
-        document.getElementById("jd-result").value = txt + message.body
-      }
-
-      this.wsNextId = msgSeq + 1
-    })
-    let data = JSON.stringify({
-      script: code,
-      language: language,
-      versionIndex: index
-    })
-
-    socketClient.send('/app/execute-ws-api-token', data, { message_type: 'execute', token: jdToken })
-  }
-
-  function onWsConnectionFailed(e) {
-    console.log('connection failed')
-    console.log(e)
-  }
-
-  function onInput(event) {
-    let key = event.key
-    if (event.key === 'Enter') {
-      key = '\n'
-    }
-    socketClient.send('/app/execute-ws-api-token', key, { message_type: 'input' })
-
-  }*/
   const runSolution = async (e) => {
-    setIsResults(false);
-    document.getElementById("jd-result").className="";
+    setIsResults(false); document.getElementById("jd-testresult").value = "Loading...";
+    document.getElementById("jd-testresult").className = "";
     await axios.post('http://localhost:5000/getToken', {
       "clientId": clientId,
       "clientSecret": clientSecret
@@ -119,7 +48,91 @@ function ProblemPage(props) {
     ).then((response) => {
       if (response.data && response.data != "") {
         setToken(response.data);
-        window.callSocket(response.data,code);
+        let socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), { heartbeat: false, debug: true })
+        
+        function onWsConnection() {
+          console.log('connection succeeded')
+
+          socketClient.subscribe('/user/queue/execute-i', (message) => {
+            let msgId = message.headers['message-id']
+            let msgSeq = parseInt(msgId.substring(msgId.lastIndexOf('-') + 1))
+
+            let statusCode = parseInt(message.headers.statusCode)
+
+            if (statusCode === 201) {
+              try {
+                this.wsNextId = msgSeq + 1
+              } catch (e) {
+
+              }
+              return
+            }
+
+            let t0
+            try {
+              t0 = performance.now()
+              while ((performance.now() - t0) < 2500 && this.wsNextId !== msgSeq) {
+
+              }
+            } catch (e) {
+
+            }
+
+            if (statusCode === 204) {
+              //executionTime = message.body
+            } else if (statusCode === 500 || statusCode === 410) {
+              //server error
+              console.log("server error");
+            } else if (statusCode === 206) {
+              //outputFiles = JSON.parse(message.body)
+              //returns file list - not supported in this custom api
+            } else if (statusCode === 429) {
+              //Daily limit reached
+              console.log("daily limit reached");
+            } else if (statusCode === 400) {
+              //Invalid request - invalid signature or token expired - check the body for details
+              console.log("invalid request - invalid signature or token expired");
+            } else if (statusCode === 401) {
+              //Unauthorised request
+              console.log("Unauthorised request");
+            } else {
+              if(document.getElementById("jd-testresult").value == "Loading...")
+                document.getElementById("jd-testresult").value ="";
+              var txt = document.getElementById("jd-testresult").value
+              document.getElementById("jd-testresult").value = txt + message.body
+            }
+            try {
+              this.wsNextId = msgSeq + 1
+            } catch (e) {
+
+            }
+          })
+          let data = JSON.stringify({
+            script: code,
+            language: language,
+            versionIndex: index
+          })
+
+          socketClient.send('/app/execute-ws-api-token', data, { message_type: 'execute', token: jdToken })
+        }
+
+        function onWsConnectionFailed(e) {
+          console.log('connection failed')
+          console.log(e)
+        }
+
+        function textonInput(event) {
+          let key = event.key
+          if (event.key === 'Enter') {
+            key = '\n'
+          }
+          socketClient.send('/app/execute-ws-api-token', key, { message_type: 'input' })
+
+        }
+        document.getElementById("jd-testresult").removeEventListener("keypress", textonInput);
+        document.getElementById("jd-testresult").addEventListener("keypress", textonInput);
+        socketClient.connect({}, onWsConnection, onWsConnectionFailed);
+        // callSocket(response.data,code);
       }
     });
 
@@ -131,7 +144,7 @@ function ProblemPage(props) {
     let output = '';
     setTestResult("");
     setIsResults(true); let otArray = [];
-    document.getElementById("jd-result").className="hide";
+    document.getElementById("jd-testresult").value = "";
     problem["testCases"].map(async (element, index) => {
       if (index < 5) {
         await axios.post('http://localhost:5000/execute', {
@@ -230,7 +243,8 @@ function ProblemPage(props) {
                       </div>)
                     })
                   ) : (<div className='id-wrapResult'>
-                                 </div>)
+                    <textarea id="jd-testresult"></textarea>
+                  </div>)
                 }
               </div>
             </div>

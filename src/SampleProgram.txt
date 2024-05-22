@@ -25,7 +25,8 @@ var line = Console.ReadLine();
             num2 = numbers[1];
 
             var sum = num + num2;
-                     Console.WriteLine(sum);
+                Console.WriteLine("sum ={0}",sum);
+                    
        
 		}
 	}
