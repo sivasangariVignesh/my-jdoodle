@@ -27,10 +27,27 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <style>
+     .hide{
+      display: none;
+     }
+      textarea#jd-result {
+    resize: none;
+    /* resize: vertical; */
+    width: 570px;
+    height: 150px;
+    float: right;
+    margin-right: 160px;
+    position: relative;
+    bottom: 33px;
+}
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <textarea rows="5" cols="100" id="jd-result" class="hide"></textarea >      
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -44,6 +61,90 @@
     <script src="https://www.jdoodle.com/assets/jdoodle-pym.min.js" type="text/javascript"> </script>
     <script src="https://api.jdoodle.com/js/sockjs.js"></script>
 <script src="https://api.jdoodle.com/js/webstomp.js"></script>
-   
+  <script>
+    window.callSocket = function(token,code){
+      document.getElementById("jd-result").value="";
+var socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), { heartbeat: false, debug: true })
+
+  function onWsConnection() {
+    console.log('connection succeeded')
+
+    socketClient.subscribe('/user/queue/execute-i', (message) => {
+      var msgId = message.headers['message-id']
+      var msgSeq = parseInt(msgId.substring(msgId.lastIndexOf('-') + 1))
+
+      var statusCode = parseInt(message.headers.statusCode)
+
+      if (statusCode === 201) {
+        this.wsNextId = msgSeq + 1
+        return
+      }
+
+      var t0
+      try {
+        t0 = performance.now()
+        while ((performance.now() - t0) < 2500 && this.wsNextId !== msgSeq) {
+
+        }
+      } catch (e) {
+
+      }
+
+      if (statusCode === 204) {
+        //executionTime = message.body
+      } else if (statusCode === 500 || statusCode === 410) {
+        //server error
+        console.log("server error");
+      } else if (statusCode === 206) {
+        //outputFiles = JSON.parse(message.body)
+        //returns file list - not supported in this custom api
+      } else if (statusCode === 429) {
+        //Daily limit reached
+        console.log("daily limit reached");
+      } else if (statusCode === 400) {
+        //Invalid request - invalid signature or token expired - check the body for details
+        console.log("invalid request - invalid signature or token expired");
+      } else if (statusCode === 401) {
+        //Unauthorised request
+        console.log("Unauthorised request");
+      } else {
+        var txt = document.getElementById("jd-result").value
+        document.getElementById("jd-result").value = txt + message.body
+      }
+
+      this.wsNextId = msgSeq + 1
+    })
+    var data = JSON.stringify({
+      script: window.jdExecuteCode,
+      language: "csharp",
+      versionIndex: 4
+    })
+
+    socketClient.send('/app/execute-ws-api-token', data, { message_type: 'execute', token: window.jdExecuteToken })
+  }
+
+  function onWsConnectionFailed(e) {
+    console.log('connection failed')
+    console.log(e)
+  }
+  function textonInput(event) {
+    var key = event.key
+    if (event.key === 'Enter') {
+      key = '\n'
+    }
+
+    socketClient.send('/app/execute-ws-api-token', key, { message_type: "input" })
+
+  }
+  document.getElementById("jd-result").removeEventListener("keypress",textonInput);
+document.getElementById("jd-result").addEventListener("keypress", textonInput);
+
+
+  window.jdExecuteToken = token;
+  window.jdExecuteCode= code;
+      socketClient.connect({}, onWsConnection, onWsConnectionFailed)
+}
+</script>
+ 
   </body>
 </html>

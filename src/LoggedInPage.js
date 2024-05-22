@@ -33,8 +33,8 @@ function LoggedInPage({ username }) {
     const [cookies, setCookie, removeCookie] = useCookies(['jDoodle-users']);
     let currentUsers = cookies['jDoodle-users'];
 
-
-    const location = useLocation();//props.location.state;
+const [challengeStatus,setChallengeStatus] = useState("Submit Challenge");
+    const location = useLocation();
     const problemId = location?.state?.id;
     const stateUserName = location?.state?.username;
     if (stateUserName) username = stateUserName;
@@ -88,36 +88,10 @@ function LoggedInPage({ username }) {
 
             });
             setCookie('jDoodle-users', updatedUserList);
+            setChallengeStatus("Submitted");
 
         }
     };
-
-    // const problemReducer = function (state = 0, action) {
-    //     jsonObj[state] ["status"] = true;
-    //         return state;
-
-    //   };
-    //   const store = configureStore({
-    //     reducer: problemReducer, 
-    //   });
-    //   const updateProblemList = (id) => {
-    //     return {
-
-    //         // Describes the action to be taken
-    //         type: 'UPDATE_PROBLEM',
-    //         id
-    //     };
-    // };
-    useEffect(() => {
-
-    }, [])
-
-
-
-    //   const handleClick = (valu) => { 
-    //     <Link to={`/ProblemPage/${valu}`}>sample</Link>
-    //   };
-
 
 
     function renderpage() {
@@ -216,7 +190,7 @@ function LoggedInPage({ username }) {
                         <Col xs lg="2">
 
                         </Col>
-                        <Col md="auto"> <Button onClick={submitResult}>Submit Challenge</Button></Col>
+                        <Col md="auto"> <Button onClick={submitResult}>{challengeStatus}</Button></Col>
                         <Col xs lg="2">
 
                         </Col>

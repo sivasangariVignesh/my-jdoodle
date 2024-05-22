@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace HelloWorld
+{
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			 Console.WriteLine("Enter 2 numbers with space between");
+       
+
+		 int answer = 0;
+        int num = 0;
+        int num2 = 0;
+var line = Console.ReadLine();
+       string[] tokens = line.Split();
+       
+       int[] numbers = Array.ConvertAll(tokens, int.Parse);
+            
+            num = numbers[0];
+
+            num2 = numbers[1];
+
+            var sum = num + num2;
+                     Console.WriteLine(sum);
+       
+		}
+	}
+}

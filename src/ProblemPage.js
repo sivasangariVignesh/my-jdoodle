@@ -20,7 +20,7 @@ function ProblemPage(props) {
   );
   const [displayResults, setDisplayResults] = useState("");
   const [isResults, setIsResults] = useState(false);
-  const location = useLocation();//props.location.state;
+  const location = useLocation();
   const problem = location.state;
   const testCases = problem.testCases;
   const [testResult, setTestResult] = useState("");
@@ -37,7 +37,7 @@ function ProblemPage(props) {
   const [testOut, setTestOut] = useState('');
 
   const [jdToken, setToken] = useState('');
-  let socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), { heartbeat: false, debug: true })
+  /*let socketClient = window.webstomp.over(new window.SockJS('https://api.jdoodle.com/v1/stomp'), { heartbeat: false, debug: true })
 
   function onWsConnection() {
     console.log('connection succeeded')
@@ -81,7 +81,7 @@ function ProblemPage(props) {
         //Unauthorised request
         console.log("Unauthorised request");
       } else {
-        var txt = document.getElementById("result").value
+        var txt = document.getElementById("jd-result").value
         document.getElementById("jd-result").value = txt + message.body
       }
 
@@ -108,46 +108,46 @@ function ProblemPage(props) {
     }
     socketClient.send('/app/execute-ws-api-token', key, { message_type: 'input' })
 
-  }
+  }*/
   const runSolution = async (e) => {
+    setIsResults(false);
+    document.getElementById("jd-result").className="";
     await axios.post('http://localhost:5000/getToken', {
-   "clientId": clientId,
+      "clientId": clientId,
       "clientSecret": clientSecret
     }
     ).then((response) => {
-      //output = response.data["output"];
-     
-      setToken(response.data);
-      socketClient.connect({}, onWsConnection, onWsConnectionFailed)
-      //  setResult();
+      if (response.data && response.data != "") {
+        setToken(response.data);
+        window.callSocket(response.data,code);
+      }
     });
-  
-  setTestResult(testResult)
+
 
   };
-  
+
 
   const executeProblem = async (e) => {
     let output = '';
     setTestResult("");
     setIsResults(true); let otArray = [];
-    problem["testCases"].map(async (element, item) => {
-
-      await axios.post('http://localhost:5000/execute', {
-        "url": url, "language": language, "index": index,
-        "input": element.testInput, "clientId": clientId,
-        "clientSecret": clientSecret, "code": code
-      }
-      ).then((response) => {
-        //output = response.data["output"];
-        output += "TestCase " + item + " : Input = " + element.testInput + " Output = " + response.data;;
-        otArray.push({
-          "input": element.testInput,
-          "output": response.data
+    document.getElementById("jd-result").className="hide";
+    problem["testCases"].map(async (element, index) => {
+      if (index < 5) {
+        await axios.post('http://localhost:5000/execute', {
+          "url": url, "language": language, "index": index,
+          "input": element.testInput, "clientId": clientId,
+          "clientSecret": clientSecret, "code": code
+        }
+        ).then((response) => {
+          output += "TestCase " + index + " : Input = " + element.testInput + " Output = " + response.data;;
+          otArray.push({
+            "input": element.testInput,
+            "output": response.data
+          });
+          setTestArray(otArray);
         });
-        setTestArray(otArray);
-        //  setResult();
-      });
+      }
     });
     setTestResult(testResult)
 
@@ -213,7 +213,7 @@ function ProblemPage(props) {
 
             </div>
 
-            <div className='jd-problem-exection-submit'> <Button onClick={executeProblem}>Execute Test Case</Button>
+            <div className='jd-problem-exection-submit'> <Button onClick={executeProblem}>Execute Test Cases</Button>
               <Button onClick={runSolution}>Run Code</Button>
             </div>
             <div className='jd-problem-exection-results'>
@@ -223,15 +223,14 @@ function ProblemPage(props) {
                   isResults ? (
                     testResultArray.map((item, index) => {
                       return (<div className='jd-testResult'>
-                        <div className='jd-testResultTitle'> Test Case {index} </div>
+                        <div className='jd-testResultTitle'> Test Case {index + 1} </div>
 
                         <div className='jd-testResultInput'>  <div className='jd-testResultTitle'>Input: </div>{item.input} </div>
                         <div className='jd-testResultOutput'> <div className='jd-testResultTitle'>Output: </div>{item.output} </div>
                       </div>)
                     })
-                  ) : (<div>
-                    <textarea rows="5" cols="100" id="result" onKeyPress={onInput}></textarea><div id="jd-result"
-                    ></div>                 </div>)
+                  ) : (<div className='id-wrapResult'>
+                                 </div>)
                 }
               </div>
             </div>

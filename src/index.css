@@ -98,8 +98,9 @@ code {
   padding: 25px;
   border-radius: 10px;
   margin: 10px;
-  width: 100%;
-  height: 50vh;
+  width: 530px !important;
+  height: 350px !important;
+  overflow: scroll;
 }
 
 .jd-problem-exection-submit {
@@ -139,4 +140,20 @@ code {
 
 .jd-testResultTitle {
   font-weight: bold;
+}
+
+.jd-problem-exection-submit button.btn.btn-primary {
+  margin-right: 15px;
+}
+
+.jd-problem-exection-submit button.btn.btn-primary {
+  margin-right: 15px;
+}
+
+.id-wrapResult {
+  width: 100%;
+}
+
+.id-wrapResult textarea {
+  width: 100%;
 }
